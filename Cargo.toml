@@ -1,0 +1,6 @@
+[workspace]
+members = [
+    "libs/utils",
+    "apps/ci_jenkins",
+]
+resolver = "2"
