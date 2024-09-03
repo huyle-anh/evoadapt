@@ -1,0 +1,9 @@
+{
+    "jenkin_user": "hule",
+    "jenkin_token": "1113cacf21918e88d02a333232a08c8efb",
+    "jenkin_url": "https://server.jenkin.com",
+    "daily_rebase_check": "OBMC_Daily_Rebase_Check",
+    "daily_main_check": "OBMC_Daily_Main_Check",
+    "daily_rergression_test": "OBMC_Daily_Regression_Test",
+    "time_out": 36000
+}
