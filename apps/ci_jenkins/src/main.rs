@@ -33,20 +33,19 @@ fn main() -> Result<(), Box<dyn Error>> {
     let jenkin_user = config.jenkin_user.clone();
     let jenkin_token = config.jenkin_token.clone();
     let jenkin_url = config.jenkin_url.clone();
-    let daily_rebase_check = config.daily_rebase_check.clone();
-    let daily_main_check = config.daily_main_check.clone();
-    let daily_rergression_test = config.daily_rergression_test.clone();
+    let job_trigger = config.job_trigger.clone();
+    let job_check_status = config.job_check_status.clone();
     //let _timeout = config.as_ref().unwrap().timeout.clone();
     match utils::trigger_jenkins_job(
         &jenkin_user,
         &jenkin_token,
         &jenkin_url,
-        &daily_rebase_check,
+        &job_trigger,
     ) {
         Ok((_trigger_url, build_id)) => {
             println!(
                 "Trigger Rebase-URL successfully: {}/job/{}/{}",
-                jenkin_url, daily_rebase_check, build_id
+                jenkin_url, job_trigger, build_id
             );
             println!("Build ID: {}", build_id);
             match utils::check_jenkins_job_status(
@@ -54,29 +53,13 @@ fn main() -> Result<(), Box<dyn Error>> {
                 &jenkin_user,
                 &jenkin_token,
                 &jenkin_url,
-                &daily_rebase_check,
+                &job_trigger,
                 &build_id, // | build_id.c_str()
-                &daily_rergression_test,
+                &job_check_status,
             ) {
                 Ok(_status) => {
-                    println!("Next run daily_main_check");
-                    match utils::trigger_jenkins_job(
-                        &jenkin_user,
-                        &jenkin_token,
-                        &jenkin_url,
-                        &daily_main_check,
-                    ) {
-                        Ok((_trigger_url, build_id)) => {
-                            println!(
-                                "Trigger Main-URL successfully: {}/job/{}/{}",
-                                jenkin_url, daily_main_check, build_id
-                            );
-                        }
-                        Err(e) => {
-                            eprintln!("Failed to trigger Jenkins Job: {}", e);
-                            return Err(e);
-                        }
-                    }
+                    println!("Jenkins job completed successfully!");
+                    // Removed the second job trigger since you only have one job in config
                 }
                 Err(e) => {
                     eprintln!("Failed to check Status: {}", e);

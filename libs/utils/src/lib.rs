@@ -25,7 +25,9 @@ pub mod utils {
         jenkins_url: &str,
         jenkins_job_name: &str,
     ) -> Result<(String, String), Box<dyn Error>> {
-        let client = Client::new();
+        let client = Client::builder()
+            .danger_accept_invalid_certs(true)
+            .build()?;
 
         /*
          * Trigging job to jenkins
@@ -87,7 +89,9 @@ pub mod utils {
         job_name: &str,
     ) -> Result<String, Box<dyn Error>> {
         let url = format!("{}/job/{}/lastBuild/api/json", jenkins_url, job_name);
-        let client = reqwest::blocking::Client::new();
+        let client = reqwest::blocking::Client::builder()
+            .danger_accept_invalid_certs(true)
+            .build()?;
         let response = client
             .get(&url)
             .basic_auth(jenkins_user, Some(jenkins_token))
@@ -120,7 +124,9 @@ pub mod utils {
                 "{}/job/{}/{}/api/json",
                 jenkins_url, jenkins_job_name, build_id
             );
-            let client = reqwest::blocking::Client::new();
+            let client = reqwest::blocking::Client::builder()
+                .danger_accept_invalid_certs(true)
+                .build()?;
             let response = client
                 .get(&url)
                 .basic_auth(jenkins_user, Some(jenkins_token))
@@ -210,11 +216,11 @@ pub mod utils {
         pub jenkin_user: String,
         pub jenkin_token: String,
         pub jenkin_url: String,
-        pub daily_rebase_check: String,
-        pub daily_main_check: String,
-        pub daily_rergression_test: String,
+        pub job_trigger: String,
+        pub job_check_status: String,
         pub time_out: u16,
     }
+
     pub fn read_json_cfg(file_path: &str) -> Result<Config, Box<dyn Error>> {
         let mut file = File::open(file_path).map_err(|e| Box::new(e) as Box<dyn Error>)?;
         let mut contents = String::new();
